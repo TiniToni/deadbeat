@@ -582,10 +582,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalMusic: {fileID: 685369470}
   dangerMusic: {fileID: 448923975}
-  rhythmMusic1: {fileID: 685369470}
-  rhythmMusic2: {fileID: 685369470}
+  rhythmMusic1: {fileID: 468668744}
+  rhythmMusic2: {fileID: 468668744}
   fadeDuration: 1.5
-  bs: {fileID: 0}
+  bs: {fileID: 1625897276}
 --- !u!4 &854706475
 Transform:
   m_ObjectHideFlags: 0

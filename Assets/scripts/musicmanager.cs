@@ -16,10 +16,14 @@ public class MusicManager : MonoBehaviour
 
     public beatScroller bs;
 
+    public FunctionTimer funcTimer;
+
     // Start is called before the first frame update
     void Start()
     {
+        FunctionTimer.Create(PlayDangerMusic, 30f);
         normalMusic.Play();
+        bs.started = true;
     }
 
     // Play danger music and fade it in
@@ -27,6 +31,7 @@ public class MusicManager : MonoBehaviour
     {
         if (!isScared)
         {
+            FunctionTimer.Create(PlayRhythmMusic, 10f);
             isScared = true;
             StartCoroutine(Fade(normalMusic, dangerMusic)); // Fade to danger music
         }
@@ -38,8 +43,10 @@ public class MusicManager : MonoBehaviour
         if (!isRhythmActive && isScared)
         {
             isRhythmActive = true;
-            currentRhythmMusic = (Random.Range(0, 2) == 0) ? rhythmMusic1 : rhythmMusic2;
-            StartCoroutine(Fade(dangerMusic, currentRhythmMusic)); // Fade from danger to rhythm music
+            //currentRhythmMusic = (Random.Range(0, 2) == 0) ? rhythmMusic1 : rhythmMusic2;
+            currentRhythmMusic = rhythmMusic1;
+            StartCoroutine(Fade(dangerMusic, rhythmMusic1)); // Fade from danger to rhythm music
+            FunctionTimer.Create(StopRhythmMusic, 15f);
         }
     }
     // Stop danger music and fade back to normal music
@@ -84,8 +91,7 @@ public class MusicManager : MonoBehaviour
         {
             if (Input.anyKeyDown)
             {
-                PlayDangerMusic();
-
+                //PlayDangerMusic();
             }
         }
     }
