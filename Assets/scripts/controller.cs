@@ -4,24 +4,22 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.InputSystem;
 
+
 public class CharacterController : MonoBehaviour
 {
-    public Rigidbody2D body;
+    public Transform mapTransform; // Assign the map's transform in the Inspector
     public Animator animator;
     public GameObject flashlight;
 
     private float horizontal;
     private float vertical;
-    private Vector2 lastDirection = Vector2.right; // Store last movement direction
+    private Vector2 lastDirection = Vector2.right;
 
-    public float runSpeed = 5.0f;
-    private Vector3 originalScale;
+    public float moveSpeed = 5.0f;
 
     private void Start()
     {
-        body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        originalScale = transform.localScale;
     }
 
     private void Update()
@@ -32,37 +30,13 @@ public class CharacterController : MonoBehaviour
         bool isMoving = horizontal != 0 || vertical != 0;
         animator.SetBool("isWalking", isMoving);
 
-        // Store last movement direction when moving
+
         if (isMoving)
         {
             lastDirection = new Vector2(horizontal, vertical).normalized;
         }
 
-        // Flip character sprite based on horizontal movement direction
-        if (horizontal > 0)
-        {
-            // Face right
-            transform.localScale = new Vector3(Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);  
-        }
-        else if (horizontal < 0)
-        {
-            // Face left
-            transform.localScale = new Vector3(-Mathf.Abs(originalScale.x), originalScale.y, originalScale.z); 
-        }
-
-        // Flip flashlight based on horizontal direction
-        if (horizontal > 0)
-        {
-            // Flashlight points right (no flip needed)
-            flashlight.transform.localScale = new Vector3(Mathf.Abs(flashlight.transform.localScale.x), flashlight.transform.localScale.y, flashlight.transform.localScale.z);
-        }
-        else if (horizontal < 0)
-        {
-            // Flip flashlight to point left
-            flashlight.transform.localScale = new Vector3(-Mathf.Abs(flashlight.transform.localScale.x), flashlight.transform.localScale.y, flashlight.transform.localScale.z);
-        }
-
-        // Handle flashlight rotation based on last movement direction
+        // Rotate flashlight based on movement direction
         if (lastDirection.x > 0)
         {
             flashlight.transform.rotation = Quaternion.Euler(0, 0, 0);  // Point right
@@ -83,9 +57,8 @@ public class CharacterController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Apply movement
-        body.velocity = new Vector2(horizontal * runSpeed, vertical * runSpeed);
-        flashlight.transform.position = transform.position;
+        // Instead of moving the player, move the map
+        mapTransform.position -= new Vector3(horizontal, vertical, 0) * moveSpeed * Time.fixedDeltaTime;
     }
+    
 }
-
