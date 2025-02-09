@@ -19,7 +19,8 @@ public class NoteObject : MonoBehaviour
         {
             if (validHit)
             {
-                gameObject.SetActive(false);
+                //gameObject.SetActive(false);
+                Destroy(gameObject);
             }
         }
     }
@@ -37,5 +38,9 @@ public class NoteObject : MonoBehaviour
         {
             validHit = false;
         }
+    }
+    private void OnBecameInvisible()
+    {
+        Destroy(gameObject);
     }
 }
