@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.InputSystem;
-public CutSceneController cutSceneController;
+using CutSceneController cutscenecontrol;
 
 
 public class CharacterController : MonoBehaviour
@@ -25,8 +25,8 @@ public class CharacterController : MonoBehaviour
         animator = GetComponent<Animator>();
         originalScale = transform.localScale;
 
-        if (cutSceneController != null){
-            cutSceneController.PlayCutscene();  
+        if (cutscenecontrol != null){
+            cutscenecontrol.PlayCutscene();  
         }
     }
 
@@ -94,4 +94,3 @@ public class CharacterController : MonoBehaviour
         flashlight.transform.position = transform.position;
     }
 }
-
