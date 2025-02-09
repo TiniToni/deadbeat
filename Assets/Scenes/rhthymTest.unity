@@ -969,7 +969,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbc96f38cbaf53040bd24ea1dfe39e92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beatTempo: 120
+  beatTempo: 135
   started: 0
 --- !u!4 &1625897277
 Transform:

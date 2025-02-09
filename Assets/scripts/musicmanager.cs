@@ -21,6 +21,10 @@ public class MusicManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        normalMusic.time = 1f;
+        dangerMusic.time = 0.2f;
+        rhythmMusic1.time = 0.2f;
+
         FunctionTimer.Create(PlayDangerMusic, 30f);
         normalMusic.Play();
         bs.started = true;
@@ -31,9 +35,11 @@ public class MusicManager : MonoBehaviour
     {
         if (!isScared)
         {
-            FunctionTimer.Create(PlayRhythmMusic, 10f);
+            FunctionTimer.Create(PlayRhythmMusic, 7f);
             isScared = true;
-            StartCoroutine(Fade(normalMusic, dangerMusic)); // Fade to danger music
+            dangerMusic.Play();
+            normalMusic.Stop();
+            //StartCoroutine(Fade(normalMusic, dangerMusic)); // Fade to danger music
         }
     }
 
@@ -87,12 +93,12 @@ public class MusicManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isScared)
-        {
-            if (Input.anyKeyDown)
-            {
-                //PlayDangerMusic();
-            }
-        }
+        //if (!isScared)
+        //{
+        //    if (Input.anyKeyDown)
+        //    {
+        //        //PlayDangerMusic();
+        //    }
+        //}
     }
 }
