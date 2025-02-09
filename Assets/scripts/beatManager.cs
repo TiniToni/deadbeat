@@ -9,8 +9,7 @@ public class BeatManager : MonoBehaviour
     private bool isHeightened = false;
     private float fadeDuration = 1.5f;
 
-    public heartUI heartUI;  // Reference to the HeartUI component (drag the HeartUI script here)
-
+    // Start is called before the first frame update
     void Start()
     {
         normal.Play();
@@ -18,41 +17,25 @@ public class BeatManager : MonoBehaviour
         heightened.Play();
     }
 
-    public void triggerHeightened()
-    {
-        if (!isHeightened)
-        {
+    public void triggerHeightened() {
+        if(!isHeightened) {
             isHeightened = true;
             StartCoroutine(FadeHeartbeats(normal, heightened));
-
-            if (heartUI != null)
-            {
-                heartUI.SetHeartbeatSpeed(heartUI.dangerSpeed);  // Speed up the heartbeat
-            }
         }
     }
 
-    public void resetNormal()
-    {
-        if (isHeightened)
-        {
+    public void resetNormal() {
+        if(isHeightened) {
             isHeightened = false;
             StartCoroutine(FadeHeartbeats(heightened, normal));
-
-            if (heartUI != null)
-            {
-                heartUI.SetHeartbeatSpeed(heartUI.normalSpeed);  // Return heartbeat to normal speed
-            }
         }
     }
 
-    private IEnumerator FadeHeartbeats(AudioSource fadeOut, AudioSource fadeIn)
-    {
+    private IEnumerator FadeHeartbeats(AudioSource fadeOut, AudioSource fadeIn) {
         float startVol = fadeOut.volume;
         fadeIn.volume = 0;
         float timer = 0f;
-        while (timer < fadeDuration)
-        {
+        while(timer < fadeDuration) {
             timer += Time.deltaTime;
             fadeOut.volume = Mathf.Lerp(startVol, 0, timer / fadeDuration);
             fadeIn.volume = Mathf.Lerp(0, startVol, timer / fadeDuration);
@@ -61,5 +44,11 @@ public class BeatManager : MonoBehaviour
 
         fadeOut.volume = 0;
         fadeIn.volume = startVol;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 }

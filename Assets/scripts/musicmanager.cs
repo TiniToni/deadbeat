@@ -14,11 +14,20 @@ public class MusicManager : MonoBehaviour
     public float fadeDuration = 1.5f;
     private AudioSource currentRhythmMusic;
 
+    public beatScroller bs;
+
+    public FunctionTimer funcTimer;
+
     // Start is called before the first frame update
     void Start()
     {
+        normalMusic.time = 1f;
+        dangerMusic.time = 0.2f;
+        rhythmMusic1.time = 0.2f;
+
+        FunctionTimer.Create(PlayDangerMusic, 30f);
         normalMusic.Play();
-        dangerMusic.volume = 0;
+        bs.started = true;
     }
 
     // Play danger music and fade it in
@@ -26,15 +35,12 @@ public class MusicManager : MonoBehaviour
     {
         if (!isScared)
         {
+            FunctionTimer.Create(PlayRhythmMusic, 7f);
             isScared = true;
-            StartCoroutine(Fade(normalMusic, dangerMusic)); // Fade to danger music
+            dangerMusic.Play();
+            normalMusic.Stop();
+            //StartCoroutine(Fade(normalMusic, dangerMusic)); // Fade to danger music
         }
-    }
-
-    public void StopDangerMusic()
-    {
-        dangerMusic.Stop();
-        dangerMusic.volume = 0;  // Reset volume to avoid popping sound
     }
 
     // Play rhythm music (after danger music) and fade it in
@@ -43,8 +49,10 @@ public class MusicManager : MonoBehaviour
         if (!isRhythmActive && isScared)
         {
             isRhythmActive = true;
-            currentRhythmMusic = (Random.Range(0, 2) == 0) ? rhythmMusic1 : rhythmMusic2;
-            StartCoroutine(Fade(dangerMusic, currentRhythmMusic)); // Fade from danger to rhythm music
+            //currentRhythmMusic = (Random.Range(0, 2) == 0) ? rhythmMusic1 : rhythmMusic2;
+            currentRhythmMusic = rhythmMusic1;
+            StartCoroutine(Fade(dangerMusic, rhythmMusic1)); // Fade from danger to rhythm music
+            FunctionTimer.Create(StopRhythmMusic, 15f);
         }
     }
     // Stop danger music and fade back to normal music
@@ -85,6 +93,12 @@ public class MusicManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //if (!isScared)
+        //{
+        //    if (Input.anyKeyDown)
+        //    {
+        //        //PlayDangerMusic();
+        //    }
+        //}
     }
 }

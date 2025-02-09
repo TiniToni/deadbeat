@@ -4,26 +4,21 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.InputSystem;
 
-
-public class CharacterController : MonoBehaviour
+public class controller : MonoBehaviour
 {
-    public Transform mapTransform; // Assign the map's transform in the Inspector
-    public Animator animator;
-    public GameObject flashlight;
+    public Rigidbody2D body;
+    private Animator animator;
 
-    private float horizontal;
-    private float vertical;
-    private Vector2 lastDirection = Vector2.right;
+    float horizontal;
+    float vertical;
 
-    public float moveSpeed = 5.0f;
-    private SpriteRenderer spriteRenderer;  // Add a reference to the SpriteRenderer
-
+    public float runSpeed = 20.0f;
+    public float moveLimiter = 0.7f;
 
     private void Start()
     {
+        body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();  // Get the SpriteRenderer component
-
     }
 
     private void Update()
@@ -31,47 +26,29 @@ public class CharacterController : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
 
-        bool isMoving = horizontal != 0 || vertical != 0;
-        animator.SetBool("isWalking", isMoving);
-
-
-        if (isMoving)
-        {
-            lastDirection = new Vector2(horizontal, vertical).normalized;
-        }
-
-         if (horizontal > 0)
-        {
-            spriteRenderer.flipX = false;  // Character is facing right
-        }
-        else if (horizontal < 0)
-        {
-            spriteRenderer.flipX = true;   // Character is facing left
-        }
-
-        // Rotate flashlight based on movement direction
-        if (lastDirection.x > 0)
-        {
-            flashlight.transform.rotation = Quaternion.Euler(0, 0, 0);  // Point right
-        }
-        else if (lastDirection.x < 0)
-        {
-            flashlight.transform.rotation = Quaternion.Euler(0, 0, 180); // Point left
-        }
-        else if (lastDirection.y > 0)
-        {
-            flashlight.transform.rotation = Quaternion.Euler(0, 0, 90);  // Point up
-        }
-        else if (lastDirection.y < 0)
-        {
-            flashlight.transform.rotation = Quaternion.Euler(0, 0, -90);  // Point down
-        }
     }
 
     private void FixedUpdate()
     {
-        // Instead of moving the player, move the map
-        mapTransform.position -= new Vector3(horizontal, vertical, 0) * moveSpeed * Time.fixedDeltaTime;
+        if (horizontal != 0 && vertical != 0)
+        {
+            horizontal *= moveLimiter;
+            vertical *= moveLimiter;
+        }
+        body.velocity = new Vector2(horizontal * runSpeed, vertical * runSpeed);
     }
-    
+    private void OnMovement(InputValue value)
+    {   
+        if(horizontal != 0 || vertical != 0)
+        { 
+            animator.SetFloat("X", horizontal);
+            animator.SetFloat("Y", vertical);
+            animator.SetBool("isWalking", true);
+        }
+        else
+        {
+            animator.SetBool("isWalking", false);
+        }
+    }
 }
+
