@@ -14,6 +14,8 @@ public class MusicManager : MonoBehaviour
     public float fadeDuration = 1.5f;
     private AudioSource currentRhythmMusic;
 
+    public beatScroller bs;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -78,6 +80,13 @@ public class MusicManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (!isScared)
+        {
+            if (Input.anyKeyDown)
+            {
+                PlayDangerMusic();
+
+            }
+        }
     }
 }
