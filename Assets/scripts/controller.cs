@@ -7,19 +7,21 @@ using UnityEngine.InputSystem;
 public class CharacterController : MonoBehaviour
 {
     public Rigidbody2D body;
-    public Animator animator;  // Reference to the Animator component
+    public Animator animator;
+    public GameObject flashlight;
 
     private float horizontal;
     private float vertical;
+    private Vector2 lastDirection = Vector2.right; // Store last movement direction
 
-    public float runSpeed = 5.0f;  // Adjust speed as needed
-    private Vector3 originalScale;  // Store original scale
+    public float runSpeed = 5.0f;
+    private Vector3 originalScale;
 
     private void Start()
     {
         body = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>(); // Get Animator attached to GameObject
-        originalScale = transform.localScale; // Save the original scale of the character
+        animator = GetComponent<Animator>();
+        originalScale = transform.localScale;
     }
 
     private void Update()
@@ -27,16 +29,55 @@ public class CharacterController : MonoBehaviour
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
 
-        bool isMoving = horizontal != 0 || vertical != 0;  
-        animator.SetBool("isWalking", isMoving);  // Trigger walking animation when moving
+        bool isMoving = horizontal != 0 || vertical != 0;
+        animator.SetBool("isWalking", isMoving);
 
+        // Store last movement direction when moving
         if (isMoving)
         {
-            // Flip character but keep the original scale
-            if (horizontal > 0)
-                transform.localScale = new Vector3(Mathf.Abs(originalScale.x), originalScale.y, originalScale.z); // Right
-            else if (horizontal < 0)
-                transform.localScale = new Vector3(-Mathf.Abs(originalScale.x), originalScale.y, originalScale.z); // Left
+            lastDirection = new Vector2(horizontal, vertical).normalized;
+        }
+
+        // Flip character sprite based on horizontal movement direction
+        if (horizontal > 0)
+        {
+            // Face right
+            transform.localScale = new Vector3(Mathf.Abs(originalScale.x), originalScale.y, originalScale.z);  
+        }
+        else if (horizontal < 0)
+        {
+            // Face left
+            transform.localScale = new Vector3(-Mathf.Abs(originalScale.x), originalScale.y, originalScale.z); 
+        }
+
+        // Flip flashlight based on horizontal direction
+        if (horizontal > 0)
+        {
+            // Flashlight points right (no flip needed)
+            flashlight.transform.localScale = new Vector3(Mathf.Abs(flashlight.transform.localScale.x), flashlight.transform.localScale.y, flashlight.transform.localScale.z);
+        }
+        else if (horizontal < 0)
+        {
+            // Flip flashlight to point left
+            flashlight.transform.localScale = new Vector3(-Mathf.Abs(flashlight.transform.localScale.x), flashlight.transform.localScale.y, flashlight.transform.localScale.z);
+        }
+
+        // Handle flashlight rotation based on last movement direction
+        if (lastDirection.x > 0)
+        {
+            flashlight.transform.rotation = Quaternion.Euler(0, 0, 0);  // Point right
+        }
+        else if (lastDirection.x < 0)
+        {
+            flashlight.transform.rotation = Quaternion.Euler(0, 0, 180); // Point left
+        }
+        else if (lastDirection.y > 0)
+        {
+            flashlight.transform.rotation = Quaternion.Euler(0, 0, 90);  // Point up
+        }
+        else if (lastDirection.y < 0)
+        {
+            flashlight.transform.rotation = Quaternion.Euler(0, 0, -90);  // Point down
         }
     }
 
@@ -44,6 +85,7 @@ public class CharacterController : MonoBehaviour
     {
         // Apply movement
         body.velocity = new Vector2(horizontal * runSpeed, vertical * runSpeed);
+        flashlight.transform.position = transform.position;
     }
 }
 
