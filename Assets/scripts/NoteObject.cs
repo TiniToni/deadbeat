@@ -14,17 +14,24 @@ public class NoteObject : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+{
+    if (Input.GetKeyDown(key))
     {
-        if (Input.GetKeyDown(key))
+        if (validHit)
         {
-            if (validHit)
+            // Add check for null before destroying the object
+            if (gameObject != null)
             {
-                //gameObject.SetActive(false);
                 Destroy(gameObject);
+            }
+            else
+            {
+                Debug.LogError("NoteObject is null when attempting to destroy!");
             }
         }
     }
-    
+}
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if(other.tag == "Activator")

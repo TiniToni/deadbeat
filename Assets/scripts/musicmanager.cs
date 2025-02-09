@@ -16,31 +16,52 @@ public class MusicManager : MonoBehaviour
 
     public beatScroller bs;
 
-    public FunctionTimer funcTimer;
+    //public FunctionTimer funcTimer;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        normalMusic.time = 1f;
-        dangerMusic.time = 0.2f;
-        rhythmMusic1.time = 0.2f;
+    // Initialize the FunctionTimer correctly before calling PlayDangerMusic
+void Start()
+{
+    normalMusic.time = 1f;
+    dangerMusic.time = 0.2f;
+    rhythmMusic1.time = 0.2f;
 
-        FunctionTimer.Create(PlayDangerMusic, 30f);
-        normalMusic.Play();
-        bs.started = true;
-    }
+    // Ensure the timer is created correctly before calling PlayDangerMusic
+    FunctionTimer.Create(PlayDangerMusic, 15f);
+    FunctionTimer.Create(PlayChart, 5f);
+
+    normalMusic.Play();
+    //bs.started = true;
+}
 
     // Play danger music and fade it in
     public void PlayDangerMusic()
+{
+    if (!isScared)
     {
-        if (!isScared)
+        FunctionTimer.Create(PlayRhythmMusic, 7f);
+        isScared = true;
+
+        // Check if the AudioSources are assigned before playing
+        if (dangerMusic != null && normalMusic != null)
         {
-            FunctionTimer.Create(PlayRhythmMusic, 7f);
-            isScared = true;
             dangerMusic.Play();
             normalMusic.Stop();
-            //StartCoroutine(Fade(normalMusic, dangerMusic)); // Fade to danger music
         }
+        else
+        {
+            Debug.LogError("AudioSources (dangerMusic or normalMusic) are not assigned!");
+        }
+    }
+}
+
+    public void PlayChart(){
+        bs.started = true;
+    }
+    public void StopDangerMusic()
+    {
+        dangerMusic.Stop();
+        dangerMusic.volume = 0;  // Reset volume to avoid popping sound
     }
 
     // Play rhythm music (after danger music) and fade it in

@@ -8,22 +8,26 @@ public class beatScroller : MonoBehaviour
     public bool started;
     // Start is called before the first frame update
     void Start()
-    {
-        beatTempo = beatTempo / 60f;
-    }
+{
+    beatTempo = beatTempo / 60f;
 
-    // Update is called once per frame
-    void Update()
+    // Ensure started flag is initialized
+    if (!started)
     {
-        if (!started)
-        {
-            /*if (Input.anyKeyDown){
-                started = true;
-            }*/
-        }
-        else
-        {
-            transform.position -= new Vector3(0f, beatTempo * Time.deltaTime, 0f);
-        }
+        Debug.Log("Beat Scroller not started.");
     }
+}
+
+void Update()
+{
+    if (started)
+    {
+        transform.position -= new Vector3(0f, beatTempo * Time.deltaTime, 0f);
+    }
+    else
+    {
+        Debug.Log("Beat scroller hasn't started yet.");
+    }
+}
+
 }

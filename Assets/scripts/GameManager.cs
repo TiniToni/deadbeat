@@ -47,9 +47,9 @@ public class GameManager : MonoBehaviour
 {
     while (true)
     {
-        // Wait for a random time between 30 to 45 seconds (adjust as needed)
-        float randomInterval = Random.Range(30f, 45f); // You can change 30f and 45f to any other range you prefer
-        yield return new WaitForSeconds(randomInterval);
+        // // Wait for a random time between 30 to 45 seconds (adjust as needed)
+        // float randomInterval = Random.Range(30f, 45f); // You can change 30f and 45f to any other range you prefer
+        // yield return new WaitForSeconds(randomInterval);
 
         if (!entityVisible)  // Only teleport if it's currently hidden
         {
