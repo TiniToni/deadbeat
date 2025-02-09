@@ -18,6 +18,7 @@ public class MusicManager : MonoBehaviour
     void Start()
     {
         normalMusic.Play();
+        dangerMusic.volume = 0;
     }
 
     // Play danger music and fade it in
@@ -28,6 +29,12 @@ public class MusicManager : MonoBehaviour
             isScared = true;
             StartCoroutine(Fade(normalMusic, dangerMusic)); // Fade to danger music
         }
+    }
+
+    public void StopDangerMusic()
+    {
+        dangerMusic.Stop();
+        dangerMusic.volume = 0;  // Reset volume to avoid popping sound
     }
 
     // Play rhythm music (after danger music) and fade it in
