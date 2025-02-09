@@ -9,94 +9,95 @@ public class GameManager : MonoBehaviour
     public MusicManager musicManager;
 
     public GameObject entityPrefab;
+    private GameObject entityInstance;  // Keep a single instance
     public Transform player;
-    public float spawnInterval = 10f; 
-    public float minSpawnDist = 5f;  
-    public float maxSpawnDist = 10f;  
-    public LayerMask obstacleLayer; 
-    public float dangerCueDuration = 2f;  
+    public float minSpawnDist = 5f;
+    public float maxSpawnDist = 10f;
+    public float teleportInterval = 10f;  // Time between teleports
+    public LayerMask obstacleLayer;
 
-    private GameObject currentEntity; // Track active entity
+    private bool entityVisible = false;
 
     void Awake()
+{
+    if (Instance == null)
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);  // Keep it across scenes
     }
-    
+    else
+    {
+        Destroy(gameObject);
+    }
+}
+
 
     void Start()
     {
-        StartCoroutine(SpawnEntityLoop());
+        // Create a single entity but keep it inactive
+        entityInstance = Instantiate(entityPrefab, Vector3.zero, Quaternion.identity);
+        entityInstance.SetActive(false);  // Initially hidden
+
+        StartCoroutine(TeleportEntity());
     }
 
-    private IEnumerator SpawnEntityLoop()
+    private IEnumerator TeleportEntity()
     {
         while (true)
         {
-            yield return new WaitForSeconds(spawnInterval);
-            if (currentEntity == null) // Ensure only one entity exists
+            yield return new WaitForSeconds(teleportInterval);
+
+            if (!entityVisible)  // Only teleport if it's currently hidden
             {
-                TriggerEntitySpawn();
+                Vector3 newPosition = GetValidSpawnPosition();
+                if (newPosition != Vector3.zero)
+                {
+                    entityInstance.transform.position = newPosition;
+                    entityInstance.SetActive(true);  // Make it visible
+                    entityVisible = true;
+
+                    StartDangerSequence();
+                }
             }
-        }
-    }
-
-    private void TriggerEntitySpawn()
-    {
-        if (entityPrefab == null || player == null)
-        {
-            Debug.LogWarning("Entity or player reference is missing.");
-            return;
-        }
-
-        Vector3 spawnPosition = GetValidSpawnPosition();
-
-        if (spawnPosition != Vector3.zero)
-        {
-            currentEntity = Instantiate(entityPrefab, spawnPosition, Quaternion.identity);
-
-            // Assign the "Entity" layer for easier detection
-            currentEntity.layer = LayerMask.NameToLayer("Entity");
         }
     }
 
     private Vector3 GetValidSpawnPosition()
     {
-        Vector3 facingDirection = player.right.normalized; // Ensure entity spawns in front of player
-        Vector3 potentialPosition = player.position + facingDirection * Random.Range(minSpawnDist, maxSpawnDist);
-
-        if (!Physics2D.OverlapCircle(potentialPosition, 1f, obstacleLayer))
+        for (int i = 0; i < 10; i++) // Try 10 times to find a valid position
         {
-            return potentialPosition;
-        }
+            Vector2 randomDirection = Random.insideUnitCircle.normalized;
+            Vector3 potentialPosition = player.position + (Vector3)(randomDirection * Random.Range(minSpawnDist, maxSpawnDist));
 
+            if (IsWithinCameraView(potentialPosition) && !Physics2D.OverlapCircle(potentialPosition, 1f, obstacleLayer))
+            {
+                return potentialPosition;
+            }
+        }
         return Vector3.zero; // No valid position found
     }
 
-    public void StartDangerSequence(GameObject entity)
+    private bool IsWithinCameraView(Vector3 position)
     {
-        if (currentEntity == entity) // Ensure it's the active entity
-        {
-            heartbeat.triggerHeightened();
-            musicManager.PlayDangerMusic();
-            StartCoroutine(HandleEntityDespawn(entity));
-        }
+        Vector3 viewportPoint = Camera.main.WorldToViewportPoint(position);
+        return viewportPoint.x > 0.2f && viewportPoint.x < 0.8f && viewportPoint.y > 0.2f && viewportPoint.y < 0.8f;
     }
 
-    private IEnumerator HandleEntityDespawn(GameObject entity)
+    public void StartDangerSequence()
     {
-        yield return new WaitForSeconds(dangerCueDuration); // Danger cue duration before rhythm sequence
-        Destroy(entity);
-        currentEntity = null;
+        heartbeat.triggerHeightened();
+        musicManager.PlayDangerMusic();
 
-        // Reset heartbeat and start rhythm game
+        StartCoroutine(HandleEntityVisibility());
+    }
+
+    private IEnumerator HandleEntityVisibility()
+    {
+        yield return new WaitForSeconds(2f);  // Duration of the danger cue
+        entityInstance.SetActive(false);  // Hide the entity
+        entityVisible = false;
+
+        // Reset heartbeat and music
         heartbeat.resetNormal();
         musicManager.PlayRhythmMusic();
     }
