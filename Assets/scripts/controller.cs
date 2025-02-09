@@ -16,10 +16,14 @@ public class CharacterController : MonoBehaviour
     private Vector2 lastDirection = Vector2.right;
 
     public float moveSpeed = 5.0f;
+    private SpriteRenderer spriteRenderer;  // Add a reference to the SpriteRenderer
+
 
     private void Start()
     {
         animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();  // Get the SpriteRenderer component
+
     }
 
     private void Update()
@@ -34,6 +38,15 @@ public class CharacterController : MonoBehaviour
         if (isMoving)
         {
             lastDirection = new Vector2(horizontal, vertical).normalized;
+        }
+
+         if (horizontal > 0)
+        {
+            spriteRenderer.flipX = false;  // Character is facing right
+        }
+        else if (horizontal < 0)
+        {
+            spriteRenderer.flipX = true;   // Character is facing left
         }
 
         // Rotate flashlight based on movement direction

@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public BeatManager heartbeat;
     public MusicManager musicManager;
+    // public RhythmGameManager rhythmGame; // Reference to the rhythm game
+
 
     public GameObject entityPrefab;
     private GameObject entityInstance;  // Keep a single instance
@@ -42,25 +44,31 @@ public class GameManager : MonoBehaviour
     }
 
     private IEnumerator TeleportEntity()
+{
+    while (true)
     {
-        while (true)
+        // Wait for a random time between 30 to 45 seconds (adjust as needed)
+        float randomInterval = Random.Range(30f, 45f); // You can change 30f and 45f to any other range you prefer
+        yield return new WaitForSeconds(randomInterval);
+
+        if (!entityVisible)  // Only teleport if it's currently hidden
         {
-            yield return new WaitForSeconds(teleportInterval);
-
-            if (!entityVisible)  // Only teleport if it's currently hidden
+            Vector3 newPosition = GetValidSpawnPosition();
+            if (newPosition != Vector3.zero)
             {
-                Vector3 newPosition = GetValidSpawnPosition();
-                if (newPosition != Vector3.zero)
-                {
-                    entityInstance.transform.position = newPosition;
-                    entityInstance.SetActive(true);  // Make it visible
-                    entityVisible = true;
+                entityInstance.transform.position = newPosition;
+                entityInstance.SetActive(true);  // Make it visible
+                entityVisible = true;
 
-                    StartDangerSequence();
-                }
+                // Wait for 15 seconds before starting the danger sequence
+                yield return new WaitForSeconds(15f);  // 15-second delay before triggering danger sequence
+                StartDangerSequence();  // Trigger the danger sequence
             }
         }
     }
+}
+
+
 
     private Vector3 GetValidSpawnPosition()
     {
@@ -88,6 +96,19 @@ public class GameManager : MonoBehaviour
         heartbeat.triggerHeightened();
         musicManager.PlayDangerMusic();
 
+    //    if (rhythmGame != null)
+    //     {
+    //         rhythmGame.StartRhythmSequence(OnRhythmGameEnd);
+    //     }
+    //     else
+    //     {
+    //         Debug.LogWarning("RhythmGameManager is not assigned.");
+    //         StartCoroutine(HandleEntityVisibility()); // Fallback if rhythmGame is missing
+    //     }
+    }
+
+    private void OnRhythmGameEnd()
+    {
         StartCoroutine(HandleEntityVisibility());
     }
 
@@ -99,6 +120,7 @@ public class GameManager : MonoBehaviour
 
         // Reset heartbeat and music
         heartbeat.resetNormal();
+        musicManager.StopDangerMusic();
         musicManager.PlayRhythmMusic();
     }
 
