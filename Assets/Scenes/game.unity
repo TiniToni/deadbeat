@@ -151,8 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c65b64b21749d45be91b674bb95a4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normal: {fileID: 0}
-  heightened: {fileID: 0}
+  normal: {fileID: 339115283}
+  heightened: {fileID: 1026038154}
 --- !u!4 &153944323
 Transform:
   m_ObjectHideFlags: 0
@@ -283,10 +283,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95dd06d7bccaefd45b76a937ab8a8b5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalMusic: {fileID: 0}
-  dangerMusic: {fileID: 0}
-  rhythmMusic1: {fileID: 0}
-  rhythmMusic2: {fileID: 0}
+  normalMusic: {fileID: 1336373083}
+  dangerMusic: {fileID: 219448442}
+  rhythmMusic1: {fileID: 418748566}
+  rhythmMusic2: {fileID: 1188041609}
   fadeDuration: 1.5
 --- !u!4 &204065546
 Transform:
@@ -707,7 +707,7 @@ GameObject:
   - component: {fileID: 918596402}
   m_Layer: 0
   m_Name: they/them
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1399,17 +1399,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813f5259819883642b4dc2ecf71e3bc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heartbeat: {fileID: 0}
-  musicManager: {fileID: 0}
+  heartbeat: {fileID: 153944322}
+  musicManager: {fileID: 204065545}
   entityPrefab: {fileID: 2089103264}
   player: {fileID: 918596397}
-  spawnInterval: 10
   minSpawnDist: 5
   maxSpawnDist: 10
+  teleportInterval: 10
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 0
-  dangerCueDuration: 2
 --- !u!4 &1886171915
 Transform:
   m_ObjectHideFlags: 0
@@ -1528,8 +1527,8 @@ GameObject:
   - component: {fileID: 2089103267}
   - component: {fileID: 2089103266}
   - component: {fileID: 2089103265}
-  - component: {fileID: 2089103268}
   - component: {fileID: 2089103269}
+  - component: {fileID: 2089103270}
   m_Layer: 0
   m_Name: Entity
   m_TagString: Untagged
@@ -1599,7 +1598,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 479295424, guid: b08b3d0ebdc307346aca01681ce3dcad, type: 3}
+  m_Sprite: {fileID: 1344163571, guid: bef5a59095c4a254b8840633a9721ca6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1607,7 +1606,7 @@ SpriteRenderer:
   m_Size: {x: 0.17, y: 0.26}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &2089103267
@@ -1625,18 +1624,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2089103268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2089103264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1d9f223fe9c0774db594c719242e9a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!58 &2089103269
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1672,6 +1659,18 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &2089103270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2089103264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52a8b75c2c84f424ca1d118b48820c38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
