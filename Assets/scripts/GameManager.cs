@@ -49,43 +49,51 @@ public class GameManager : MonoBehaviour
     }
 
     private void TriggerRandomEntity()
+{
+    if (entityPrefab == null || player == null)
     {
-        if (entityPrefab == null || player == null)
-        {
-            Debug.LogWarning("Entity or player reference is missing.");
-            return;
-        }
-
-        Vector3 spawnPosition = GetValidSpawnPosition();
-
-        if (spawnPosition != Vector3.zero)
-        {
-            GameObject spawnedEntity = Instantiate(entityPrefab, spawnPosition, Quaternion.identity);
-            entityActive = true;
-
-            // Trigger the rhythm sequence
-            heartbeat.triggerHeightened();
-            musicManager.PlayDangerMusic();
-
-            StartCoroutine(HandleEntityLife(spawnedEntity));
-        }
+        Debug.LogWarning("Entity or player reference is missing.");
+        return;
     }
 
-    private Vector3 GetValidSpawnPosition()
+    // Check if another entity exists within a certain radius
+    if (Physics2D.OverlapCircle(player.position, maxSpawnDist, LayerMask.GetMask("Entity")))
     {
-        for (int i = 0; i < 10; i++) // Try 10 times to find a valid position
-        {
-            Vector2 randomDirection = Random.insideUnitCircle.normalized;
-            Vector3 potentialPosition = player.position + (Vector3)(randomDirection * Random.Range(minSpawnDist, maxSpawnDist));
-
-            // Raycast to check if the position is inside the camera's view and not obstructed
-            if (IsWithinCameraView(potentialPosition) && !Physics2D.OverlapCircle(potentialPosition, 1f, obstacleLayer))
-            {
-                return potentialPosition;
-            }
-        }
-        return Vector3.zero; // No valid position found
+        return; // Prevents overwhelming spawns
     }
+
+    Vector3 spawnPosition = GetValidSpawnPosition();
+
+    if (spawnPosition != Vector3.zero)
+    {
+        GameObject spawnedEntity = Instantiate(entityPrefab, spawnPosition, Quaternion.identity);
+        entityActive = true;
+
+        // Assign the "Entity" layer to control spawning logic
+        spawnedEntity.layer = LayerMask.NameToLayer("Entity");
+
+        StartCoroutine(HandleEntityLife(spawnedEntity));
+    }
+}
+
+public void StartDangerSequence()
+{
+    heartbeat.triggerHeightened();
+    musicManager.PlayDangerMusic();
+}
+private Vector3 GetValidSpawnPosition()
+{
+    Vector3 facingDirection = player.right.normalized; // Adjust if needed for your character's facing direction
+    Vector3 potentialPosition = player.position + facingDirection * Random.Range(minSpawnDist, maxSpawnDist);
+
+    if (!Physics2D.OverlapCircle(potentialPosition, 1f, obstacleLayer))
+    {
+        return potentialPosition;
+    }
+
+    return Vector3.zero; // No valid position found
+}
+
 
     private bool IsWithinCameraView(Vector3 position)
     {
