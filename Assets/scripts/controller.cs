@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.InputSystem;
+public CutSceneController cutSceneController;
+
 
 public class CharacterController : MonoBehaviour
 {
@@ -22,6 +24,10 @@ public class CharacterController : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         originalScale = transform.localScale;
+
+        if (cutSceneController != null){
+            cutSceneController.PlayCutscene();  
+        }
     }
 
     private void Update()

@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(spawnInterval);
             if (currentEntity == null) // Ensure only one entity exists
             {
-                TriggerEntitySpawn();
+                //TriggerEntitySpawn();
             }
         }
     }
